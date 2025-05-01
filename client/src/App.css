@@ -32,4 +32,10 @@
     margin: 0 !important;
     padding: 0 !important;
   }
+  .mbox-header-buttons {
+    display: none !important;
+  }
+  .MuiTooltip-popper {
+    display: none !important;
+  }
 }

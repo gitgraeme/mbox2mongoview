@@ -120,8 +120,12 @@ function App() {
           console.error('Error saving to IndexedDB', e);
         }
       }
-    } catch (e: any) {
-      setError(e.message || String(e));
+    } catch (e) {
+      if (e instanceof Error) {
+        setError(e.message);
+      } else {
+        setError(String(e));
+      }
     } finally {
       setLoading(false);
     }
@@ -174,7 +178,8 @@ function App() {
         <Paper
           className="mbox-left-column"
           sx={{
-            width: 360,
+            minWidth: 360,
+            maxWidth: 360,
             borderRadius: 0,
             height: '100vh',
             overflowY: 'auto',
@@ -193,7 +198,7 @@ function App() {
               size="small"
               value={sortOrder}
               onChange={e => {
-                setSortOrder(e.target.value as any);
+                setSortOrder(e.target.value as 'last-desc' | 'last-asc' | 'first-desc' | 'first-asc');
                 setSelected(0); // reset selection to first thread
               }}
               sx={{ minWidth: 200, fontSize: 13 }}
