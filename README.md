@@ -1,36 +1,138 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Mbox Viewer
+
+A simple web app for viewing and navigating the contents of .mbox or .zip (containing .mbox files) email archives. Built for privacy, all parsing is done in memory and no email content or attachments are stored on disk.
+
+## Project Background
+
+From time to time, we need to extract historical emails from archives. These come in a .mbox format (or as .zip files containing .mbox files) and can contain many email threads from many different senders and receivers as well as having both embedded and attached images, documents and files.
+
+In order to view and navigate the contents of these extracts, this app allows the user to upload the .mbox or .zip file, parses and organizes these emails on the server, and returns them to the client app for navigation. All parsing is in-memory and nothing is stored.
+
+## Features & Requirements
+
+- **First Use State:**
+  - Full-viewport drag-and-drop or file picker for .mbox or .zip upload.
+  - 30MB file size limit enforced on upload.
+- **Processing:**
+  - UI shows a spinner while the server parses the file.
+  - Server parses the .mbox file (directly or extracted from .zip) using `mailparser` (no abandonware dependencies).
+  - All parsing is in-memory; no data is written to disk.
+  - Emails are grouped by subject, ignoring prefixes like `Re:`, `Fw:`, `Fwd:`, and `Automatic reply:` (recursively).
+  - Special handling for meeting invites: if an email has an attachment named `invite.ics`, the subject is normalized by removing the prefix up to the first `:` and the last string within parentheses.
+  - JSON response includes:
+    - Subject
+    - Sender
+    - Recipients (to, cc, bcc)
+    - Body (escaped HTML, including embedded attachments)
+    - All attachments (with mime-type, filename, and base64-encoded content)
+- **Processing View:** After a file is uploaded, the UI displays a loading or processing view (spinner) while the server parses the file and prepares the email data.
+- **Client UI:**
+  - Left column lists all subject groups, ordered by the most recent email in each group.
+  - Paperclip icon indicates threads with downloadable attachments.
+  - Clicking a subject shows the thread in the right panel.
+  - Each email in the thread is shown in a card, with sender, date, recipients, body, and downloadable attachments.
+  - Cards can be collapsed/expanded to show only sender and date.
+  - Responsive, desktop-focused UI using Material UI (MUI).
+  - Print/export to PDF hides the left column and expands the right column for clean output.
+  - **Optional:** Users can enable caching to store parsed threads in browser storage (IndexedDB) for large files. If enabled, the app will load cached threads on refresh and skip the upload UI.
+  - **Sorting Options:** Users can sort threads by:
+    - Most recent message: newest first
+    - Most recent message: oldest first
+    - First message: newest first
+    - First message: oldest first
+
+## Technical Details
+
+- **Backend:**
+
+  - Node.js + Express (in `server/`)
+  - Uses `mailparser` for robust .mbox parsing
+  - Supports .mbox files directly or .zip files containing .mbox files
+  - No use of abandonware (e.g., `mbox` npm package)
+  - CORS enabled for local development
+  - 30MB upload limit enforced via `multer`
+  - All parsing and grouping logic is in-memory
+
+- **Frontend:**
+  - React + Vite + TypeScript (in `client/`)
+  - Material UI (MUI) for layout and components
+  - Drag-and-drop and file picker for .mbox or .zip upload
+  - Threaded email navigation with attachment download
+  - Print styles for PDF export
+  - Uses IndexedDB (via `idb`) for optional large-data caching
 
 ## Getting Started
 
-First, run the development server:
+### Prerequisites
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+- Node.js (v18+ recommended)
+- npm
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### Setup
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+1. **Clone the repository:**
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+   ```sh
+   git clone <repo-url>
+   cd mbox-viewer
+   ```
 
-## Learn More
+2. **Install all dependencies (root, server, client) with one command:**
 
-To learn more about Next.js, take a look at the following resources:
+   ```sh
+   npm run install-all
+   ```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+3. **Start both backend and frontend together:**
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+   ```sh
+   npm run dev
+   ```
 
-## Deploy on Vercel
+   This will run both the Express backend and the Vite React frontend concurrently.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+4. **Open the app:**
+   - Visit [http://localhost:5173](http://localhost:5173) in your browser.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+### Usage
+
+- Drag and drop a `.mbox` or `.zip` file (max 30MB) or use the file picker.
+- Wait for the server to process and return the parsed emails.
+- Browse threads in the left column; view and download attachments in the right panel.
+- Collapse/expand individual emails for easier navigation.
+- Print or export to PDF for a clean, single-column output.
+- **Optional:** Enable "Cache emails in browser storage" before uploading to store parsed threads in IndexedDB. On refresh, the app will load cached threads and skip the upload UI.
+
+## Privacy & Security
+
+- All parsing is performed in memory only; no email content or attachments are written to disk on the server or client.
+- No persistent storage or database is used on the backend.
+- Optional browser caching (IndexedDB) is available, but only if the user enables it before upload. Cached data remains local to the user's browser and is never transmitted elsewhere.
+- No email data is ever sent to third-party services; all processing is local to your environment.
+- Intended for internal/private use only. Use with sensitive data at your own discretion.
+
+## Credits
+
+- [**mailparser**](https://github.com/nodemailer/mailparser): Used on the backend to robustly parse .mbox files and extract email content, metadata, and attachments.
+- [**multer**](https://github.com/expressjs/multer): Handles multipart form uploads (file uploads) in the Express backend, enforcing the 30MB file size limit and providing easy access to uploaded files in memory.
+- [**concurrently**](https://github.com/open-cli-tools/concurrently): Allows running both the backend and frontend servers with a single command for streamlined development.
+- [**Material UI (MUI)**](https://mui.com/): Provides a modern, accessible, and responsive component library for building the desktop-focused user interface.
+- [**idb**](https://github.com/jakearchibald/idb): A small library for IndexedDB, used to cache large parsed email data in the browser.
+- [**adm-zip**](https://github.com/cthackers/adm-zip): Used on the backend to extract .mbox files from uploaded .zip archives, enabling support for zipped email exports.
+- [**GitHub Copilot**](https://github.com/features/copilot): Assisted in vibe-coding this awesome and useful tool, helping with code, design, and documentation throughout the project.
+
+## Model
+
+This project was developed with the assistance of GitHub Copilot, powered by OpenAI's GPT-4 model. Copilot provided code suggestions, design ideas, and documentation support throughout the development process.
+
+## To Do:
+
+- 🖨️ button in thread view
+- Pre-upload options such as (all on by default):
+  - Normalise subject (removing reply and forward prefixes)
+  - Normalise Google Calendar notification (removing state change and calendar name)
+  - Include inline attachments
+  - Include downloadable attachments
+- Export as JSON
+- List all included downloadable attachments
+- Better removal/collapsing of quoted thread emails

@@ -1,0 +1,35 @@
+@media print {
+  .mbox-left-column,
+  .MuiDivider-vertical,
+  .mbox-left-column * {
+    display: none !important;
+    width: 0 !important;
+    min-width: 0 !important;
+    max-width: 0 !important;
+    padding: 0 !important;
+    margin: 0 !important;
+  }
+  .mbox-main-column {
+    width: 100vw !important;
+    max-width: 100vw !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    flex: 1 1 100vw !important;
+    box-sizing: border-box !important;
+    display: block !important;
+  }
+  .mbox-main-column,
+  .mbox-main-column * {
+    overflow: visible !important;
+    max-height: none !important;
+    height: auto !important;
+  }
+  body,
+  html,
+  #root {
+    width: 100vw !important;
+    max-width: 100vw !important;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+}
