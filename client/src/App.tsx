@@ -1,13 +1,10 @@
-import { useRef, useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import {
   Box,
-  Typography,
   Button,
   Divider,
   Paper,
 } from "@mui/material";
-import Switch from '@mui/material/Switch';
-import FormControlLabel from '@mui/material/FormControlLabel';
 import Select from '@mui/material/Select';
 import MenuItem from '@mui/material/MenuItem';
 import { openDB } from 'idb';
@@ -57,7 +54,6 @@ function App() {
   const [saveToLocal, setSaveToLocal] = useState(true);
   const [checkingCache, setCheckingCache] = useState(true);
   const [sortOrder, setSortOrder] = useState<'last-desc' | 'last-asc' | 'first-desc' | 'first-asc'>('last-desc');
-  const inputRef = useRef<HTMLInputElement | null>(null);
   const toggleCollapse = (idx: number) => {
     setCollapsed(prev => {
       const next = new Set(prev);
