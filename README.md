@@ -125,6 +125,10 @@ In order to view and navigate the contents of these extracts, this app allows th
 
 This project was developed with the assistance of GitHub Copilot, powered by OpenAI's GPT-4 model. Copilot provided code suggestions, design ideas, and documentation support throughout the development process.
 
+## License
+
+This project is licensed under the MIT License. See the [LICENSE](./LICENSE) file for details.
+
 ## To Do:
 
 - 🖨️ button in thread view
