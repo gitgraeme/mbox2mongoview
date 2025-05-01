@@ -36,7 +36,6 @@ for (let i = 1; i <= 100; i++) {
     let body = `This is the body of email #${i} with subject "${subj}".`;
     if (embedJpg) {
       body += `\n\nImage source: media/File:July_night_sky_(35972569256).jpg`;
-      body += `\n\nBelow is an embedded image.`;
     }
     if (attachPdf) {
       body += `\n\nAttachment source: https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf`;
@@ -65,21 +64,15 @@ for (let i = 1; i <= 100; i++) {
 fs.writeFileSync("sample.mbox", mbox);
 console.log("Sample mbox file generated: sample.mbox");
 
-// Zip the mbox file using the appropriate command for the OS, keeping the original
+// Zip the mbox file using the zip command on Unix-like systems, keeping the original
 const { execSync } = require("child_process");
-const isWindows = process.platform === "win32";
 try {
-  if (isWindows) {
-    // Use PowerShell Compress-Archive
-    execSync("powershell.exe Compress-Archive -Path sample.mbox -DestinationPath sample.mbox.zip -Force");
-  } else {
-    // Use zip command on Unix-like systems
-    execSync("zip -j sample.mbox.zip sample.mbox");
-    execSync("xattr -d com.apple.provenance sample.mbox.zip");
-  }
+  execSync("zip -j sample.mbox.zip sample.mbox");
   console.log("Sample mbox file zipped: sample.mbox.zip");
 } catch (err) {
-  console.error("Could not create sample.mbox.zip automatically. Please zip sample.mbox manually.");
+  console.error(
+    "Could not create sample.mbox.zip automatically. Are you usins a *nix machine? Please zip sample.mbox manually."
+  );
 }
 
 // Remove all extended attributes from the mbox file (macOS only)
