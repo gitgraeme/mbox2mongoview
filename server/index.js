@@ -100,19 +100,30 @@ app.post("/upload", upload.single("file"), async (req, res) => {
         subject,
         lastMessageDate,
         firstMessageDate,
-        emails: sorted.map((email) => ({
-          sender: email.from?.text || "",
-          to: email.to?.text || "",
-          cc: email.cc?.text || "",
-          bcc: email.bcc?.text || "",
-          date: email.date,
-          body: email.html || email.textAsHtml || email.text || "",
-          attachments: (email.attachments || []).map((att) => ({
-            filename: att.filename,
-            contentType: att.contentType,
-            content: att.content.toString("base64"),
-          })),
-        })),
+        emails: sorted.map((email) => {
+          let body = email.html || email.textAsHtml || email.text || "";
+          // Remove <p>\u0000 and everything after if present
+          // This is a workaround for a bug in mailparser where it adds metadata created by Mac OS
+          const nullPattern = /<p>\u0000/;
+          const match = body.match(nullPattern);
+          if (match) {
+            body = body.slice(0, match.index);
+          }
+          return {
+            sender: email.from?.text || "",
+            to: email.to?.text || "",
+            cc: email.cc?.text || "",
+            bcc: email.bcc?.text || "",
+            date: email.date,
+            body,
+            attachments: (email.attachments || []).map((att) => ({
+              filename: att.filename,
+              contentType: att.contentType,
+              content: att.content.toString("base64"),
+              isInline: att.contentDisposition && att.contentDisposition.toLowerCase().startsWith("inline"),
+            })),
+          };
+        }),
       };
     });
     // Sort threads by most recent email in thread (descending)

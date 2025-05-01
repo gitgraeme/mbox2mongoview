@@ -2,6 +2,7 @@ export interface Attachment {
   filename: string;
   contentType: string;
   content: string;
+  isInline?: boolean;
 }
 
 export interface Email {

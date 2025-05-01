@@ -228,14 +228,6 @@ function App() {
           }}
           className="mbox-main-column"
         >
-          <Box sx={{ p: 2, borderBottom: '1px solid', borderColor: 'grey.200', bgcolor: 'grey.50', minHeight: 64 }}>
-            <Typography variant="h5" fontWeight={700} gutterBottom mb={0}>
-              {thread.subject}
-            </Typography>
-            <Typography variant="subtitle2" color="text.secondary">
-              {thread.emails.length} message{thread.emails.length !== 1 ? 's' : ''}
-            </Typography>
-          </Box>
           <ThreadView
             thread={thread}
             collapsed={collapsed}

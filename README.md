@@ -40,6 +40,9 @@ In order to view and navigate the contents of these extracts, this app allows th
     - Most recent message: oldest first
     - First message: newest first
     - First message: oldest first
+- **Thread View Enhancements:**
+  - The attachment count is a clickable link; clicking it expands a list of all attachments in the thread, each with a download link and an envelope emoji (✉️) that scrolls to the corresponding email card.
+  - A small print button (🖨️) in the thread header allows printing the current thread view.
 
 ## Technical Details
 
@@ -103,6 +106,35 @@ In order to view and navigate the contents of these extracts, this app allows th
 - Print or export to PDF for a clean, single-column output.
 - **Optional:** Enable "Cache emails in browser storage" before uploading to store parsed threads in IndexedDB. On refresh, the app will load cached threads and skip the upload UI.
 
+## Screenshot
+
+Below is a screenshot of the Mbox Viewer application in action:
+
+![Mbox Viewer Screenshot](./screenshot.webp)
+
+## Example/Test Mbox Files
+
+Sample mbox files for testing are provided in the `example/` directory:
+
+- `example/sample.mbox`: A sample mbox file containing 100 emails with a variety of subjects.
+- `example/sample.mbox.zip`: A zip archive containing the same sample mbox file, for testing zip upload support.
+
+### Creating Your Own Sample Mbox File
+
+You can generate a sample mbox file using the provided script:
+
+```sh
+cd example
+node generate.js
+```
+
+This will create a `sample.mbox` file with 100 emails and a `sample.mbox.zip` archive. You can use these files to test the application's upload and parsing features.
+
+### Using the Example Files
+
+- On the app's upload screen, drag and drop `sample.mbox` or `sample.mbox.zip`, or use the file picker to select one of these files.
+- The app will process and display the emails for navigation and testing.
+
 ## Privacy & Security
 
 - All parsing is performed in memory only; no email content or attachments are written to disk on the server or client.
@@ -131,12 +163,12 @@ This project is licensed under the MIT License. See the [LICENSE](./LICENSE) fil
 
 ## To Do:
 
-- 🖨️ button in thread view
+- ~~🖨️ button in thread view~~
 - Pre-upload options such as (all on by default):
   - Normalise subject (removing reply and forward prefixes)
   - Normalise Google Calendar notification (removing state change and calendar name)
   - Include inline attachments
   - Include downloadable attachments
 - Export as JSON
-- List all included downloadable attachments
+- ~~List all included downloadable attachments~~
 - Better removal/collapsing of quoted thread emails
