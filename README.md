@@ -2,58 +2,19 @@
 
 A simple web app for viewing and navigating the contents of .mbox or .zip (containing .mbox files) email archives. Built for privacy, all parsing is done in memory and no email content or attachments are stored on disk.
 
-## Features & Requirements
+![Mbox Viewer Screenshot](./screenshot.webp)
 
-- **First Use State:**
-  - Full-viewport drag-and-drop or file picker for .mbox or .zip upload.
-  - 30MB file size limit enforced on upload.
-- **Processing:**
-  - Server parses the .mbox file (directly or extracted from .zip) using `mailparser`.
-  - All parsing is in-memory; no data is written to disk.
-  - Emails are grouped by subject, ignoring prefixes like `Re:`, `Fw:`, `Fwd:`, and `Automatic reply:` (recursively).
-  - Special handling for Google Calendar notifications: if an email has an attachment named `invite.ics`, the subject is normalized by removing the prefix up to the first `:` and the last string within parentheses.
-  - JSON response includes:
-    - Subject
-    - Sender
-    - Recipients (to, cc, bcc)
-    - Body (escaped HTML, including embedded attachments)
-    - All attachments (with mime-type, filename, and base64-encoded content)
-- **Client UI:**
-  - Left column lists all subject groups, ordered by the most recent email in each group.
-  - Paperclip icon indicates threads with downloadable attachments.
-  - Clicking a subject shows the thread in the right panel.
-  - Each email in the thread is shown in a card, with sender, date, recipients, body, and downloadable attachments.
-  - Cards can be collapsed/expanded to show only sender and date.
-  - Responsive, desktop-focused UI using Material UI (MUI).
-  - The attachment count is a clickable link; clicking it expands a list of all attachments in the thread, each with a download link and an envelope emoji (✉️) that scrolls to the corresponding email card.
-  - A small print button (🖨️) in the thread header allows printing the current thread view.
-  - Print/export to PDF hides the left column and expands the right column for clean output.
-  - **Optional:** Users can enable caching to store parsed threads in browser storage (IndexedDB) for large files. If enabled, the app will load cached threads on refresh and skip the upload UI.
-  - **Sorting Options:** Users can sort threads by:
-    - Most recent message: newest first
-    - Most recent message: oldest first
-    - First message: newest first
-    - First message: oldest first
+## Table of Contents
 
-## Technical Details
-
-- **Backend:**
-
-  - Node.js + Express (in `server/`)
-  - Uses `mailparser` for robust .mbox parsing
-  - Supports .mbox files directly or .zip files containing .mbox files
-  - No use of abandonware (e.g., `mbox` npm package)
-  - CORS enabled for local development
-  - 30MB upload limit enforced via `multer`
-  - All parsing and grouping logic is in-memory
-
-- **Frontend:**
-  - React + Vite + TypeScript (in `client/`)
-  - Material UI (MUI) for layout and components
-  - Drag-and-drop and file picker for .mbox or .zip upload
-  - Threaded email navigation with attachment download
-  - Print styles for PDF export
-  - Uses IndexedDB (via `idb`) for optional large-data caching
+- [Getting Started](#getting-started)
+- [Example/Test Mbox Files](#exampletest-mbox-files)
+- [Features & Requirements](#features--requirements)
+- [Privacy & Security](#privacy--security)
+- [Technical Details](#technical-details)
+- [Credits](#credits)
+- [Model](#model)
+- [License](#license)
+- [To Do](#to-do)
 
 ## Getting Started
 
@@ -97,12 +58,6 @@ A simple web app for viewing and navigating the contents of .mbox or .zip (conta
 - Print or export to PDF for a clean, single-column output.
 - **Optional:** Enable "Cache emails in browser storage" before uploading to store parsed threads in IndexedDB. On refresh, the app will load cached threads and skip the upload UI.
 
-## Screenshot
-
-Below is a screenshot of the Mbox Viewer application in action:
-
-![Mbox Viewer Screenshot](./screenshot.webp)
-
 ## Example/Test Mbox Files
 
 Sample mbox files for testing are provided in the `example/` directory:
@@ -126,6 +81,34 @@ This will create a `sample.mbox` file with 100 emails and a `sample.mbox.zip` ar
 - On the app's upload screen, drag and drop `sample.mbox` or `sample.mbox.zip`, or use the file picker to select one of these files.
 - The app will process and display the emails for navigation and testing.
 
+## Features & Requirements
+
+- **First Use State:**
+  - Full-viewport drag-and-drop or file picker for .mbox or .zip upload.
+  - 30MB file size limit enforced on upload.
+- **Processing:**
+  - Server parses the .mbox file (directly or extracted from .zip) using `mailparser`.
+  - All parsing is in-memory; no data is written to disk.
+  - Emails are grouped by subject, ignoring prefixes like `Re:`, `Fw:`, `Fwd:`, and `Automatic reply:` (recursively).
+  - Special handling for Google Calendar notifications: if an email has an attachment named `invite.ics`, the subject is normalized by removing the prefix up to the first `:` and the last string within parentheses.
+  - JSON response includes:
+    - Subject
+    - Sender
+    - Recipients (to, cc, bcc)
+    - Body (escaped HTML, including embedded attachments)
+    - All attachments (with mime-type, filename, and base64-encoded content)
+- **Client UI:**
+  - Left column lists all subject groups, ordered by the most recent email in each group.
+  - Paperclip icon indicates threads with downloadable attachments.
+  - Clicking a subject shows the thread in the right panel.
+  - Each email in the thread is shown in a card, with sender, date, recipients, body, and downloadable attachments.
+  - Cards can be collapsed/expanded to show only sender and date.
+  - Emoji indicators (🖼️ for embedded images, 📎 for downloadable attachments) appear after the email date in each card.
+  - "Expand all" and "Collapse all" controls (with icons) are available in the thread header for quick navigation.
+  - The attachment count is a clickable link; clicking it expands a list of all attachments in the thread, each with a download link and an envelope emoji (✉️) that scrolls to the corresponding email card.
+  - Long strings (such as URLs) automatically wrap for better readability on narrow screens.
+  - Print/export to PDF hides the left column, header controls, and tooltips for clean output.
+
 ## Privacy & Security
 
 - All parsing is performed in memory only; no email content or attachments are written to disk on the server or client.
@@ -133,6 +116,26 @@ This will create a `sample.mbox` file with 100 emails and a `sample.mbox.zip` ar
 - Optional browser caching (IndexedDB) is available, but only if the user enables it before upload. Cached data remains local to the user's browser and is never transmitted elsewhere.
 - No email data is ever sent to third-party services; all processing is local to your environment.
 - Intended for internal/private use only. Use with sensitive data at your own discretion.
+
+## Technical Details
+
+- **Backend:**
+
+  - Node.js + Express (in `server/`)
+  - Uses `mailparser` for robust .mbox parsing
+  - Supports .mbox files directly or .zip files containing .mbox files
+  - No use of abandonware (e.g., `mbox` npm package)
+  - CORS enabled for local development
+  - 30MB upload limit enforced via `multer`
+  - All parsing and grouping logic is in-memory
+
+- **Frontend:**
+  - React + Vite + TypeScript (in `client/`)
+  - Material UI (MUI) for layout and components
+  - Drag-and-drop and file picker for .mbox or .zip upload
+  - Threaded email navigation with attachment download
+  - Print styles for PDF export
+  - Uses IndexedDB (via `idb`) for optional large-data caching
 
 ## Credits
 
