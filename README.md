@@ -8,18 +8,16 @@ A simple web app for viewing and navigating the contents of .mbox or .zip (conta
   - Full-viewport drag-and-drop or file picker for .mbox or .zip upload.
   - 30MB file size limit enforced on upload.
 - **Processing:**
-  - UI shows a spinner while the server parses the file.
-  - Server parses the .mbox file (directly or extracted from .zip) using `mailparser` (no abandonware dependencies).
+  - Server parses the .mbox file (directly or extracted from .zip) using `mailparser`.
   - All parsing is in-memory; no data is written to disk.
   - Emails are grouped by subject, ignoring prefixes like `Re:`, `Fw:`, `Fwd:`, and `Automatic reply:` (recursively).
-  - Special handling for meeting invites: if an email has an attachment named `invite.ics`, the subject is normalized by removing the prefix up to the first `:` and the last string within parentheses.
+  - Special handling for Google Calendar notifications: if an email has an attachment named `invite.ics`, the subject is normalized by removing the prefix up to the first `:` and the last string within parentheses.
   - JSON response includes:
     - Subject
     - Sender
     - Recipients (to, cc, bcc)
     - Body (escaped HTML, including embedded attachments)
     - All attachments (with mime-type, filename, and base64-encoded content)
-- **Processing View:** After a file is uploaded, the UI displays a loading or processing view (spinner) while the server parses the file and prepares the email data.
 - **Client UI:**
   - Left column lists all subject groups, ordered by the most recent email in each group.
   - Paperclip icon indicates threads with downloadable attachments.
@@ -27,6 +25,8 @@ A simple web app for viewing and navigating the contents of .mbox or .zip (conta
   - Each email in the thread is shown in a card, with sender, date, recipients, body, and downloadable attachments.
   - Cards can be collapsed/expanded to show only sender and date.
   - Responsive, desktop-focused UI using Material UI (MUI).
+  - The attachment count is a clickable link; clicking it expands a list of all attachments in the thread, each with a download link and an envelope emoji (✉️) that scrolls to the corresponding email card.
+  - A small print button (🖨️) in the thread header allows printing the current thread view.
   - Print/export to PDF hides the left column and expands the right column for clean output.
   - **Optional:** Users can enable caching to store parsed threads in browser storage (IndexedDB) for large files. If enabled, the app will load cached threads on refresh and skip the upload UI.
   - **Sorting Options:** Users can sort threads by:
@@ -34,9 +34,6 @@ A simple web app for viewing and navigating the contents of .mbox or .zip (conta
     - Most recent message: oldest first
     - First message: newest first
     - First message: oldest first
-- **Thread View Enhancements:**
-  - The attachment count is a clickable link; clicking it expands a list of all attachments in the thread, each with a download link and an envelope emoji (✉️) that scrolls to the corresponding email card.
-  - A small print button (🖨️) in the thread header allows printing the current thread view.
 
 ## Technical Details
 
@@ -70,7 +67,7 @@ A simple web app for viewing and navigating the contents of .mbox or .zip (conta
 1. **Clone the repository:**
 
    ```sh
-   git clone <repo-url>
+   git clone https://github.com/chrsptn/mbox-viewer.git
    cd mbox-viewer
    ```
 
