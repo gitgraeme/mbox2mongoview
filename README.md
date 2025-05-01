@@ -157,12 +157,12 @@ This project is licensed under the MIT License. See the [LICENSE](./LICENSE) fil
 
 ## To Do:
 
-- ~~🖨️ button in thread view~~
 - Pre-upload options such as (all on by default):
   - Normalise subject (removing reply and forward prefixes)
   - Normalise Google Calendar notification (removing state change and calendar name)
   - Include inline attachments
   - Include downloadable attachments
 - Export as JSON
-- ~~List all included downloadable attachments~~
 - Better removal/collapsing of quoted thread emails
+- ~~🖨️ button in thread view~~
+- ~~List all included downloadable attachments~~
