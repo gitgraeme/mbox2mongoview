@@ -2,12 +2,6 @@
 
 A simple web app for viewing and navigating the contents of .mbox or .zip (containing .mbox files) email archives. Built for privacy, all parsing is done in memory and no email content or attachments are stored on disk.
 
-## Project Background
-
-From time to time, we need to extract historical emails from archives. These come in a .mbox format (or as .zip files containing .mbox files) and can contain many email threads from many different senders and receivers as well as having both embedded and attached images, documents and files.
-
-In order to view and navigate the contents of these extracts, this app allows the user to upload the .mbox or .zip file, parses and organizes these emails on the server, and returns them to the client app for navigation. All parsing is in-memory and nothing is stored.
-
 ## Features & Requirements
 
 - **First Use State:**
