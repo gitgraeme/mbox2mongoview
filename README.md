@@ -1,4 +1,4 @@
-# Mbox Viewer
+# 📬 Mbox Viewer
 
 A simple web app for viewing and navigating the contents of .mbox or .zip (containing .mbox files) email archives. Built for privacy, all parsing is done in memory and no email content or attachments are stored on disk.
 
