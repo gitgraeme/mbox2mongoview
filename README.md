@@ -1,3 +1,7 @@
+# Why a fork?
+
+I love the Viewer -- and it wisely limits the size of a target .mbox to 30MB.  I have an .mbox that's about 18GB.  Hence this project.  The plan is to load my mail to mongodb, which the viewer will use as a backend, and it is all locally hosted (and accessed).  Wish me luck.
+
 # 📬 Mbox Viewer
 
 A simple web app for viewing and navigating the contents of .mbox or .zip (containing .mbox files) email archives. Built for privacy, all parsing is done in memory and no email content or attachments are stored on disk.
